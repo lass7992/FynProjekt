@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using FynProjekt.Models;
 
 namespace FynProjekt.Controllers
 {
@@ -29,23 +30,21 @@ namespace FynProjekt.Controllers
 
 
         // POST api/values
-        public string Post([FromBody]string value)
+        public IHttpActionResult PostNewMarker(MarkerViewModel marker)
         {
-            try
+
+            if (!ModelState.IsValid)
             {
-                if (value.Length == 0)
-                {
-                    DatabaseConnect($"INSERT INTO pos (lok,lat,latlong) VALUES ('error',200,200);", 0);
-                }
-                else
-                {
-                    DatabaseConnect($"INSERT INTO pos (lok,lat,latlong) VALUES ({value});", 0);
-                }
+                return BadRequest("Invalid data.");
             }
-            catch {
-                return "error: " + value.Length + value;
-            }
-            return value + $"  INSERT INTO pos (lok,lat,latlong) VALUES ({value});";
+
+
+            string url = $"INSERT INTO pos (lok,lat,latlong) VALUES ('{marker.name}',{marker.lat},{marker.longlat});";
+
+            DatabaseConnect(url, 0);
+
+
+            return Ok(url);
         }
 
         // PUT api/values/5
@@ -57,7 +56,7 @@ namespace FynProjekt.Controllers
         // DELETE api/values
         public void Delete()
         {
-            string url = "drop table pos; create table pos(ID int primary key NOT NULL AUTO_INCREMENT, tid timestamp DEFAULT CURRENT_TIMESTAMP, lok varchar(200), lat int, latlong int);";
+            string url = "drop table pos; create table pos(ID int primary key NOT NULL AUTO_INCREMENT, tid timestamp DEFAULT CURRENT_TIMESTAMP, lok varchar(200), lat double, latlong double);";
 
             DatabaseConnect(url, 0);
         }

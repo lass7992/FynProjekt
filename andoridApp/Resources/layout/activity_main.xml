@@ -14,31 +14,52 @@
         android:minHeight="25px"
         android:id="@+id/relativeLayout1" >
 
-        <TextView
-            android:text="asdsaddsadasasdd"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/textView1"
-            android:layout_marginLeft="137.0dp"
-            android:layout_marginBottom="434.0dp" />
-
-        <Button
-            android:text="Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button1"
-             />
-
+        
+        
         <fragment
             android:id="@+id/map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             class="com.google.android.gms.maps.MapFragment"
-            android:layout_marginTop="93.0dp" 
+            android:layout_marginTop="0dp" 
             />
 
 
+        <Button
+            android:text="New Marker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button1"
+             />
+
+        <Button
+            android:text="Delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button2"
+            android:layout_marginLeft="300.0dp" 
+             />
+        <Button
+            android:text="update"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/button3"
+            android:layout_marginLeft="257.5dp"
+            android:layout_marginBottom="453.0dp"
+            android:layout_marginTop="50.5dp" 
+             />
+
+
+        <TextView
+            android:text="asdsaddsadasasdd\nsdadsasdds\nsdahkjdsahdk\nsadasdasjdkasldsaj\njsadklsajdds"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/textView1"
+            android:layout_marginLeft="137.0dp"
+            android:layout_marginBottom="235.5dp" />
+
+     
 
     </RelativeLayout>
 </LinearLayout>

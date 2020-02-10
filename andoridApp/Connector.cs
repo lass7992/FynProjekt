@@ -4,14 +4,14 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-
+using andoridApp.model;
 using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-
+using Newtonsoft.Json;
 using Xamarin.Essentials;
 
 
@@ -39,6 +39,12 @@ namespace andoridApp
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     string result = await response.Content.ReadAsStringAsync();
+                    result = result.Replace("\"", "");
+                    result = result.Replace("\\", "");
+
+                    result = result.Remove(0, 1);
+                    result = result.Remove(result.Length-1, 1);
+
                     callback(result);
                 }
             }
@@ -48,7 +54,34 @@ namespace andoridApp
         }
 
 
-        static public async void Post(string lok, string lat, string latLong, TextView text)
+        static public async void Delete()
+        {
+
+            try
+            {
+                var request = new HttpRequestMessage();
+
+                request.RequestUri = new Uri("https://fynprojekt.azurewebsites.net/Api/values");
+                request.Method = HttpMethod.Delete;
+
+                HttpClient client = new HttpClient();
+
+                HttpResponseMessage response = await client.SendAsync(request);
+
+
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
+
+        static public async void Post(MarkerPoint mark, TextView text)
         {
             try
             {
@@ -58,21 +91,26 @@ namespace andoridApp
                 request.Method = HttpMethod.Post;
 
 
-               // request.Content = new ByteArrayContent(new byte[] { 1, 1, 1, 1 });
+                // request.Content = new ByteArrayContent(new byte[] { 1, 1, 1, 1 });
 
-               request.Content = new StringContent(":'olla',200,200", Encoding.UTF8, "application/x-www-form-urlencoded");
-
-                request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
+               string json = JsonConvert.SerializeObject(mark,Formatting.Indented);
 
 
-                
+
+                request.Content = new StringContent(mark.ToString(), Encoding.UTF8, "application/x-www-form-urlencoded");
+
+                //request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+
+
                 HttpClient client = new HttpClient();
                 HttpResponseMessage response = await client.SendAsync(request);
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     string temp = await response.Content.ReadAsStringAsync();
-                    text.Text = temp;
+                    string temp2 = await request.Content.ReadAsStringAsync();
+                    text.Text = temp2 + " \n " +temp;
                 }
                 else 
                 {
@@ -84,7 +122,5 @@ namespace andoridApp
                 text.Text = "error: " + e.Message;
             }
         }
-
-
     }
 }

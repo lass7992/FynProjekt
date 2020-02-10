@@ -8,6 +8,7 @@ using Android.Gms.Maps.Model;
 using Xamarin.Essentials;
 using System;
 using Android.Views;
+using andoridApp.model;
 
 namespace andoridApp
 {
@@ -16,7 +17,6 @@ namespace andoridApp
     {
 
         MapFragment mapFragment;
-        Button but;
         GoogleMap googlemap;
         TextView text;
 
@@ -37,7 +37,13 @@ namespace andoridApp
             View but = FindViewById(Resource.Id.button1);
             but.Click += Click;
 
-           
+            View but2 = FindViewById(Resource.Id.button2);
+            but2.Click += DeleteClick;
+
+            View but3 = FindViewById(Resource.Id.button3);
+            but3.Click += UpdateClick;
+
+
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -66,7 +72,69 @@ namespace andoridApp
             CameraUpdate cameraUpdate = CameraUpdateFactory.NewCameraPosition(cameraPosition);
 
             map.MoveCamera(cameraUpdate);
+
+
+            Connector.Get(LoadMarkers);
         }
+
+        async void LoadMarkers(string markersJson) {
+            
+
+
+            text.Text = "totototo";
+            JavaList<MarkerPoint> markers = new JavaList<MarkerPoint>();
+
+
+            //opretter alle markersne så de kan indsættes på mappet
+            foreach (string item in markersJson.Split(","))
+            {
+                MarkerPoint tempMarker = new MarkerPoint();
+                try
+                {
+                    string[] tempMarkerString = item.Split("|");
+
+                    string[] dateString = tempMarkerString[1].Split(" ");
+                    string[] date = dateString[0].Split("/");
+                    string[] time = dateString[1].Split(":");
+
+                    if (dateString[2].Equals("PM"))
+                    {
+                        time[0] = (Convert.ToInt32(time[0]) + 12).ToString();
+                    }
+
+                    tempMarker.time = new DateTime(Convert.ToInt32(date[2]), Convert.ToInt32(date[0]), Convert.ToInt32(date[1]), Convert.ToInt32(time[0]), Convert.ToInt32(time[1]), Convert.ToInt32(time[2]));
+                    tempMarker.name = tempMarkerString[2];
+                    tempMarker.lat = Convert.ToDouble(tempMarkerString[3].Replace(".",","));
+                    tempMarker.longlat = Convert.ToDouble(tempMarkerString[4].Replace(".", ","));
+
+                    markers.Add(tempMarker);
+                }
+                catch {
+                    text.Text = "gejm med marker";
+                }
+            }
+
+
+            MarkerOptions[] tempMarkerOption = new MarkerOptions[markers.Count];
+            LatLng tempPos = new LatLng(0,0);
+            int counter = -1;
+            foreach (MarkerPoint item in markers) 
+            {
+                counter++;
+                tempMarkerOption[counter] = new MarkerOptions();
+
+                tempPos.Latitude = item.lat;
+                tempPos.Longitude = item.longlat;
+
+                tempMarkerOption[counter].SetPosition( tempPos );
+
+                tempMarkerOption[counter].SetTitle(item.name);
+                tempMarkerOption[counter].SetSnippet( item.time.ToString() );
+
+                googlemap.AddMarker(tempMarkerOption[counter]);
+            }
+        }
+
 
         async void Click(object sender, EventArgs args)
         {
@@ -85,8 +153,25 @@ namespace andoridApp
 
             googlemap.AddMarker(markerOpt1);
 
-            Connector.Post("point", location.Latitude.ToString(), location.Longitude.ToString(), text);
+            MarkerPoint tempMark = new MarkerPoint("name",location.Latitude, location.Longitude);
+
+            Connector.Post(tempMark, text);
         }
 
+        async void DeleteClick(object sender, EventArgs args)
+        {
+
+            googlemap.Clear();
+
+            Connector.Delete();
+        }
+
+        async void UpdateClick(object sender, EventArgs args)
+        {
+
+            googlemap.Clear();
+
+            Connector.Get(LoadMarkers);
+        }
     }
 }
