@@ -18,7 +18,6 @@ namespace FynProjekt.Controllers
         public IEnumerable<string> Get()
         {
             string[] temp =  DatabaseConnect($"select * from pos;",5);
-
             return temp;
         }
 
@@ -27,7 +26,6 @@ namespace FynProjekt.Controllers
         {
             return DatabaseConnect($"select * from pos where ID={id};",5);
         }
-
 
         // POST api/values
         public IHttpActionResult PostNewMarker(MarkerViewModel marker)
@@ -60,8 +58,6 @@ namespace FynProjekt.Controllers
 
             DatabaseConnect(url, 0);
         }
-
-
 
         static public string[] DatabaseConnect(string query, int coll)
         {

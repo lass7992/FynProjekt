@@ -53,7 +53,6 @@ namespace andoridApp
             }
         }
 
-
         static public async void Delete()
         {
 
@@ -76,10 +75,8 @@ namespace andoridApp
             }
             catch
             {
-
             }
         }
-
 
         static public async void Post(MarkerPoint mark, TextView text)
         {
