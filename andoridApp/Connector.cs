@@ -58,11 +58,12 @@ namespace andoridApp
                 request.Method = HttpMethod.Post;
 
 
-               // request.Content = new ByteArrayContent(new byte[] { 1, 1, 1, 1 });
+                //request.Content = new ByteArrayContent(new byte[] { 1, 1, 1, 1 });
+                
+                //request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-               request.Content = new StringContent(":'olla',200,200", Encoding.UTF8, "application/x-www-form-urlencoded");
+                request.Content = new StringContent(":'olla',200,200", Encoding.UTF8, "application/x-www-form-urlencoded");
 
-                request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
 
                 
@@ -84,7 +85,5 @@ namespace andoridApp
                 text.Text = "error: " + e.Message;
             }
         }
-
-
     }
 }
