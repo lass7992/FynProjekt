@@ -8,6 +8,8 @@ using Android.Gms.Maps.Model;
 using Xamarin.Essentials;
 using System;
 using Android.Views;
+using Android.Widget;
+using static Android.App.ActionBar;
 using andoridApp.model;
 
 namespace andoridApp
@@ -19,6 +21,8 @@ namespace andoridApp
         MapFragment mapFragment;
         GoogleMap googlemap;
         TextView text;
+
+        Dialog popupDialog;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -138,24 +142,21 @@ namespace andoridApp
 
         async void Click(object sender, EventArgs args)
         {
-            //var request = new GeolocationRequest(GeolocationAccuracy.Medium);
-            //var locationXam = await Geolocation.GetLocationAsync(request);
-            LatLng location = googlemap.CameraPosition.Target;
+            popupDialog = new Dialog(this);
+            popupDialog.SetContentView(Resource.Layout.PopUpLayout);
+            popupDialog.Window.SetSoftInputMode(SoftInput.AdjustResize);
+            popupDialog.Show();
 
+            popupDialog.Window.SetLayout(LayoutParams.MatchParent, LayoutParams.WrapContent);
+            popupDialog.Window.SetBackgroundDrawableResource(Android.Resource.Color.Transparent);
 
+            popupDialog.Window.SetTitle("Vil du sætte et mærke?");
 
-            MarkerOptions markerOpt1 = new MarkerOptions();
-            markerOpt1.SetPosition(location);
+            View but = popupDialog.FindViewById(2131230750);
+            but.Click += popUpAfbryd;
 
-            markerOpt1.SetTitle("point");
-            markerOpt1.SetSnippet(location.ToString());
-
-
-            googlemap.AddMarker(markerOpt1);
-
-            MarkerPoint tempMark = new MarkerPoint("name",location.Latitude, location.Longitude);
-
-            Connector.Post(tempMark, text);
+            View but2 = popupDialog.FindViewById(2131230829);
+            but2.Click += popUpGodkend;
         }
 
         async void DeleteClick(object sender, EventArgs args)
@@ -173,5 +174,37 @@ namespace andoridApp
 
             Connector.Get(LoadMarkers);
         }
+
+
+        void popUpAfbryd(object sender, EventArgs args) 
+        {
+            popupDialog.Dismiss();
+            popupDialog.Hide();
+        }
+        void popUpGodkend(object sender, EventArgs args)
+        {
+            //var request = new GeolocationRequest(GeolocationAccuracy.Medium);
+            //var locationXam = await Geolocation.GetLocationAsync(request);
+            LatLng location = googlemap.CameraPosition.Target;
+
+            EditText pris = popupDialog.FindViewById<EditText>(2131230850);
+
+            MarkerOptions markerOpt1 = new MarkerOptions();
+            markerOpt1.SetPosition(location);
+
+            markerOpt1.SetTitle(pris.Text);
+            markerOpt1.SetSnippet(location.ToString());
+
+
+            googlemap.AddMarker(markerOpt1);
+
+            MarkerPoint tempMark = new MarkerPoint(pris.Text, location.Latitude, location.Longitude);
+
+            Connector.Post(tempMark, text);
+
+            popupDialog.Dismiss();
+            popupDialog.Hide();
+        }
+
     }
 }
